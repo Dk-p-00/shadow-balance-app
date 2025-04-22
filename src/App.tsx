@@ -20,15 +20,27 @@ import NotFound from './pages/NotFound';
 
 const queryClient = new QueryClient();
 
+const isNativePlatform = () => {
+  // Detect native platforms using Capacitor
+  return !!(window && window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+};
+
 // Handle back button for Android and lock screen orientation
 const AppRoutes = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    // Lock screen orientation to portrait
+    // Lock screen orientation to portrait on native platforms (Android/iOS) only
     const lockOrientation = async () => {
-      await ScreenOrientation.lock({ orientation: 'portrait' });
+      if (isNativePlatform() && ScreenOrientation && ScreenOrientation.lock) {
+        try {
+          await ScreenOrientation.lock({ orientation: 'portrait' });
+        } catch (e) {
+          // Ignore; likely running in browser not native
+          // console.log('ScreenOrientation API not available');
+        }
+      }
     };
     lockOrientation();
 
