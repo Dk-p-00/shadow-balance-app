@@ -5,12 +5,8 @@ import { useFinance } from '@/context/FinanceContext';
 import { cn } from '@/lib/utils';
 
 const BalanceCircle = () => {
-  const { totalBalance, totalIncome, totalExpense } = useFinance();
-  const formattedBalance = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-  }).format(totalBalance);
+  const { totalBalance, totalIncome, totalExpense, formatCurrency } = useFinance();
+  const formattedBalance = formatCurrency(totalBalance);
 
   // Calculate percentage for the circle fill
   const calculatePercentage = () => {
@@ -28,7 +24,7 @@ const BalanceCircle = () => {
   const isPositive = totalBalance >= 0;
 
   return (
-    <div className="relative flex flex-col items-center justify-center w-72 h-72 mx-auto my-8">
+    <div className="relative flex flex-col items-center justify-center w-72 h-72 mx-auto">
       {/* Background glow */}
       <div className={cn(
         "absolute w-full h-full rounded-full opacity-20 filter blur-xl",
@@ -135,10 +131,7 @@ const BalanceCircle = () => {
           >
             <p className="text-white/60">Income</p>
             <p className="text-income font-medium">
-              {new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-              }).format(totalIncome)}
+              {formatCurrency(totalIncome)}
             </p>
           </motion.div>
           
@@ -149,10 +142,7 @@ const BalanceCircle = () => {
           >
             <p className="text-white/60">Expenses</p>
             <p className="text-expense font-medium">
-              {new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-              }).format(totalExpense)}
+              {formatCurrency(totalExpense)}
             </p>
           </motion.div>
         </div>

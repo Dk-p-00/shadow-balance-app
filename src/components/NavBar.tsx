@@ -6,7 +6,8 @@ import {
   PlusCircle, 
   MinusCircle, 
   History, 
-  ArrowLeft 
+  ArrowLeft,
+  Calendar
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
@@ -82,6 +83,19 @@ const NavBar = () => {
               )}
             >
               <History className="w-5 h-5" />
+            </Button>
+          </Link>
+          
+          <Link to="/month-summary">
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn(
+                "rounded-full transition-all hover:bg-white/10",
+                location.pathname === '/month-summary' && "bg-white/10"
+              )}
+            >
+              <Calendar className="w-5 h-5" />
             </Button>
           </Link>
         </div>

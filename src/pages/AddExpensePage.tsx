@@ -1,9 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { useFinance } from '@/context/FinanceContext';
 import NavBar from '@/components/NavBar';
@@ -13,9 +14,29 @@ const AddExpensePage: React.FC = () => {
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('food');
-  const { addTransaction } = useFinance();
+  const [selectedMonth, setSelectedMonth] = useState('');
+  const { addTransaction, currentMonth, monthlyData, getMonthName } = useFinance();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Set current month as default
+  useEffect(() => {
+    setSelectedMonth(currentMonth);
+  }, [currentMonth]);
+
+  // Get list of months (current and previous 6 months)
+  const getMonthOptions = () => {
+    const months = [];
+    const now = new Date();
+    
+    for (let i = 0; i < 6; i++) {
+      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      months.push(monthStr);
+    }
+    
+    return months;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,11 +63,11 @@ const AddExpensePage: React.FC = () => {
       amount: amountValue,
       type: 'expense',
       category
-    });
+    }, selectedMonth);
     
     toast({
       title: "Expense added successfully",
-      description: `$${amountValue.toFixed(2)} has been recorded as an expense`,
+      description: `Expense of ₹${amountValue.toFixed(2)} has been recorded for ${getMonthName(selectedMonth)}`,
       className: "bg-expense/10 border-expense/20"
     });
     
@@ -55,13 +76,13 @@ const AddExpensePage: React.FC = () => {
 
   return (
     <motion.div 
-      className="min-h-screen bg-gradient-premium pb-20 pt-10 px-4"
+      className="min-h-screen bg-gradient-premium pb-20 pt-10 px-4 flex flex-col items-center"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="max-w-md mx-auto">
+      <div className="max-w-md w-full mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -94,7 +115,7 @@ const AddExpensePage: React.FC = () => {
           
           <div>
             <label className="block text-sm font-medium text-white/70 mb-2">
-              Amount ($)
+              Amount (₹)
             </label>
             <Input
               type="number"
@@ -105,6 +126,28 @@ const AddExpensePage: React.FC = () => {
               step="0.01"
               className="glass-morphism border-white/10 focus:border-expense/30 bg-transparent"
             />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-white/70 mb-2">
+              Month
+            </label>
+            <Select
+              value={selectedMonth}
+              onValueChange={setSelectedMonth}
+            >
+              <SelectTrigger className="glass-morphism border-white/10 focus:border-expense/30 bg-transparent">
+                <SelectValue placeholder="Select month" />
+              </SelectTrigger>
+              <SelectContent>
+                {getMonthOptions().map(month => (
+                  <SelectItem key={month} value={month}>
+                    {getMonthName(month)}
+                    {month === currentMonth ? ' (Current)' : ''}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           
           <div>

@@ -25,6 +25,13 @@ import {
   DialogHeader, 
   DialogTitle 
 } from '@/components/ui/dialog';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { useFinance } from '@/context/FinanceContext';
 import NavBar from '@/components/NavBar';
@@ -40,15 +47,17 @@ interface FilterOptions {
     expense: boolean;
   };
   categories: string[];
+  month: string;
 }
 
 const HistoryPage: React.FC = () => {
-  const { transactions, deleteTransaction } = useFinance();
+  const { transactions, deleteTransaction, monthlyData, currentMonth, getMonthName, formatCurrency } = useFinance();
   const { toast } = useToast();
   const [filterOpen, setFilterOpen] = useState(false);
   const [filters, setFilters] = useState<FilterOptions>({
     types: { income: true, expense: true },
     categories: [],
+    month: 'all',
   });
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [transactionToDelete, setTransactionToDelete] = useState<string | null>(null);
@@ -88,10 +97,18 @@ const HistoryPage: React.FC = () => {
     });
   };
 
+  const setMonth = (month: string) => {
+    setFilters(prev => ({
+      ...prev,
+      month
+    }));
+  };
+
   const resetFilters = () => {
     setFilters({
       types: { income: true, expense: true },
-      categories: []
+      categories: [],
+      month: 'all'
     });
   };
 
@@ -116,6 +133,9 @@ const HistoryPage: React.FC = () => {
   const filteredTransactions = transactions.filter(transaction => {
     // Check transaction type
     if (!filters.types[transaction.type]) return false;
+    
+    // Check transaction month
+    if (filters.month !== 'all' && transaction.month !== filters.month) return false;
     
     // Check transaction category (if categories selected)
     if (filters.categories.length > 0 && !filters.categories.includes(transaction.category)) {
@@ -152,7 +172,7 @@ const HistoryPage: React.FC = () => {
                 size="icon"
                 className={cn(
                   "rounded-full glass-morphism hover:bg-white/10",
-                  (filters.categories.length > 0 || !filters.types.income || !filters.types.expense) && "border-primary"
+                  (filters.categories.length > 0 || !filters.types.income || !filters.types.expense || filters.month !== 'all') && "border-primary"
                 )}
               >
                 <Filter className="h-5 w-5" />
@@ -184,6 +204,27 @@ const HistoryPage: React.FC = () => {
                       <Label htmlFor="expense-filter" className="text-sm cursor-pointer">Expense</Label>
                     </div>
                   </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <h5 className="text-sm font-medium text-white/70">Month</h5>
+                  <Select
+                    value={filters.month}
+                    onValueChange={setMonth}
+                  >
+                    <SelectTrigger className="glass-morphism border-white/10 focus:border-primary/30 bg-transparent">
+                      <SelectValue placeholder="Select month" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Months</SelectItem>
+                      {monthlyData.map(month => (
+                        <SelectItem key={month.month} value={month.month}>
+                          {getMonthName(month.month)}
+                          {month.month === currentMonth ? ' (Current)' : ''}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 
                 <div className="space-y-2">
@@ -259,7 +300,7 @@ const HistoryPage: React.FC = () => {
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ delay: index * 0.05 }}
                     className={cn(
-                      "p-4 rounded-xl glass-morphism border border-white/5 relative",
+                      "p-4 rounded-xl glass-morphism border border-white/5 relative group",
                       isIncome ? "hover:border-income/20" : "hover:border-expense/20"
                     )}
                   >
@@ -284,9 +325,14 @@ const HistoryPage: React.FC = () => {
                       
                       <div className="flex-1">
                         <h3 className="font-medium">{transaction.name}</h3>
-                        <p className="text-xs text-white/60">
-                          {formattedDate} • {formattedTime}
-                        </p>
+                        <div className="flex items-center gap-2">
+                          <p className="text-xs text-white/60">
+                            {formattedDate} • {formattedTime}
+                          </p>
+                          <div className="text-xs px-1.5 py-0.5 rounded bg-white/10 text-white/60">
+                            {getMonthName(transaction.month || currentMonth)}
+                          </div>
+                        </div>
                       </div>
                       
                       <div className="flex items-center">
@@ -299,7 +345,7 @@ const HistoryPage: React.FC = () => {
                           "font-medium",
                           isIncome ? "text-income" : "text-expense"
                         )}>
-                          ${transaction.amount.toFixed(2)}
+                          {formatCurrency(transaction.amount)}
                         </span>
                       </div>
                     </div>
