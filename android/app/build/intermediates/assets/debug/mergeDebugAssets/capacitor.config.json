@@ -1,0 +1,7 @@
+{
+	"appId": "app.shadowfinancer.com",
+	"appName": "shadow-balance-app",
+	"webDir": "dist",
+	"bundledWebRuntime": false,
+	"android": {}
+}

@@ -1,0 +1,6 @@
+app.shadowfinancer.com.test.app-tracing-1.2.0-0 C:\Users\dkpar\.gradle\caches\8.11.1\transforms\6a92744bc466cd9962d55638a00eafef\transformed\tracing-1.2.0\res
+app.shadowfinancer.com.test.app-core-1.6.1-1 C:\Users\dkpar\.gradle\caches\8.11.1\transforms\81f2ccfabd130e974f2e848d4852436a\transformed\core-1.6.1\res
+app.shadowfinancer.com.test.app-androidTest-2 C:\Users\dkpar\OneDrive\Documents\shadow-balance-app\android\app\build\generated\res\resValues\androidTest\debug
+app.shadowfinancer.com.test.app-mergeDebugAndroidTestResources-3 C:\Users\dkpar\OneDrive\Documents\shadow-balance-app\android\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+app.shadowfinancer.com.test.app-mergeDebugAndroidTestResources-4 C:\Users\dkpar\OneDrive\Documents\shadow-balance-app\android\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+app.shadowfinancer.com.test.app-debugAndroidTest-5 C:\Users\dkpar\OneDrive\Documents\shadow-balance-app\android\app\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources

@@ -1,0 +1,3 @@
+app.shadowfinancer.com.test
+style WhiteBackgroundDialogTheme
+style WhiteBackgroundTheme
