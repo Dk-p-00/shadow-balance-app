@@ -10,6 +10,14 @@ import { useEffect } from "react";
 import { App as CapApp } from "@capacitor/app";
 import { ScreenOrientation } from '@capacitor/screen-orientation';
 
+// Import all page components
+import MainPage from './pages/MainPage';
+import AddIncomePage from './pages/AddIncomePage';
+import AddExpensePage from './pages/AddExpensePage';
+import HistoryPage from './pages/HistoryPage';
+import MonthSummaryPage from './pages/MonthSummaryPage';
+import NotFound from './pages/NotFound';
+
 const queryClient = new QueryClient();
 
 // Handle back button for Android and lock screen orientation
