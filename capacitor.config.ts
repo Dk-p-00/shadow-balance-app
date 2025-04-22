@@ -1,0 +1,20 @@
+
+import { CapacitorConfig } from '@capacitor/cli';
+
+const config: CapacitorConfig = {
+  appId: 'app.lovable.547bdc06f8774978a7b33eb5ff908cef',
+  appName: 'shadow-balance-app',
+  webDir: 'dist',
+  server: {
+    url: 'https://547bdc06-f877-4978-a7b3-3eb5ff908cef.lovableproject.com?forceHideBadge=true',
+    cleartext: true
+  },
+  android: {
+    buildOptions: {
+      keystorePath: 'release-key.keystore',
+      keystoreAlias: 'key0',
+    }
+  }
+};
+
+export default config;
