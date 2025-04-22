@@ -13,7 +13,8 @@ const config: CapacitorConfig = {
     buildOptions: {
       keystorePath: 'release-key.keystore',
       keystoreAlias: 'key0',
-    }
+    },
+    orientation: 'portrait'
   }
 };
 

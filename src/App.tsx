@@ -8,22 +8,22 @@ import { FinanceProvider } from "@/context/FinanceContext";
 import { AnimatePresence } from "framer-motion";
 import { useEffect } from "react";
 import { App as CapApp } from "@capacitor/app";
-
-import MainPage from "./pages/MainPage";
-import AddIncomePage from "./pages/AddIncomePage";
-import AddExpensePage from "./pages/AddExpensePage";
-import HistoryPage from "./pages/HistoryPage";
-import MonthSummaryPage from "./pages/MonthSummaryPage";
-import NotFound from "./pages/NotFound";
+import { ScreenOrientation } from '@capacitor/screen-orientation';
 
 const queryClient = new QueryClient();
 
-// Handle back button for Android
+// Handle back button for Android and lock screen orientation
 const AppRoutes = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
+    // Lock screen orientation to portrait
+    const lockOrientation = async () => {
+      await ScreenOrientation.lock({ orientation: 'portrait' });
+    };
+    lockOrientation();
+
     const handleBackButton = () => {
       if (location.pathname === "/") {
         CapApp.exitApp();
@@ -35,7 +35,7 @@ const AppRoutes = () => {
     const backButtonListener = CapApp.addListener('backButton', handleBackButton);
 
     return () => {
-      backButtonListener.remove();
+      backButtonListener.then(listener => listener.remove());
     };
   }, [navigate, location]);
 
